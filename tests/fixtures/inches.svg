@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 4in x 2in page, user unit = 1 inch -->
+<svg xmlns="http://www.w3.org/2000/svg" width="4in" height="2in" viewBox="0 0 4 2">
+  <!-- (25.4,12.7)-(76.2,38.1) mm -->
+  <rect id="rect1" x="1" y="0.5" width="2" height="1"/>
+</svg>

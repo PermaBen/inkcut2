@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="100mm" height="50mm" viewBox="0 0 100 50">
+  <defs>
+    <text id="deftext" x="0" y="0" style="font-size:10px;font-family:sans-serif">D</text>
+  </defs>
+  <rect id="rect1" x="1" y="1" width="10" height="10" style="fill:#0000ff"/>
+  <g id="g1" transform="translate(5,5)">
+    <!-- glyphs roughly x 15..30, y 13..25 -->
+    <text id="text1" x="10" y="20" style="font-size:12px;font-family:sans-serif;fill:#ff0000">Hi</text>
+  </g>
+  <!-- clone of a text in defs: glyph around x 50..58, y 22..30 -->
+  <use id="use1" xlink:href="#deftext" x="50" y="30"/>
+  <g id="g2">
+    <text x="70" y="40" style="font-size:8px;font-family:sans-serif"><tspan style="fill:#00aa00">o</tspan>k</text>
+  </g>
+</svg>

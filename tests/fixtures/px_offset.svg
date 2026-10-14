@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- No units: 96 px per inch. viewBox origin offset (10,10) is the page corner. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="10 10 192 192">
+  <!-- x 10..106 px -> 0..25.4 mm ; y 58..106 -> 12.7..25.4 mm -->
+  <rect id="rect1" x="10" y="58" width="96" height="48"/>
+</svg>
