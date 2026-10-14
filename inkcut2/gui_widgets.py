@@ -1,4 +1,4 @@
-"""Small GTK 3 form helpers used by the VinylCut window (gui.py)."""
+"""Small GTK 3 form helpers used by the InkCut2 window (gui.py)."""
 
 import gi
 

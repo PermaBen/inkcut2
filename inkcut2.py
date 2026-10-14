@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""VinylCut Inkscape effect: send the selection (or whole drawing) to the cutting window.
+"""InkCut2 Inkscape effect: send the selection (or whole drawing) to the cutting window.
 
-Converts the selection to polylines in mm (see vinylcut/extract.py), writes a design
-JSON to %TEMP%\\vinylcut\\ and launches ``python -m vinylcut.gui <json>`` detached.
+Converts the selection to polylines in mm (see inkcut2/extract.py), writes a design
+JSON to %TEMP%\\inkcut2\\ and launches ``python -m inkcut2.gui <json>`` detached.
 The Inkscape document is never modified.
 
 Environment:
-    VINYLCUT_NO_LAUNCH=1   don't start the GUI, print the JSON path to stderr (tests)
+    INKCUT2_NO_LAUNCH=1   don't start the GUI, print the JSON path to stderr (tests)
 """
 
 import datetime
@@ -23,7 +23,7 @@ if HERE not in sys.path:
 
 import inkex  # noqa: E402
 
-from vinylcut import extract  # noqa: E402
+from inkcut2 import extract  # noqa: E402
 
 DETACHED_PROCESS = 0x00000008
 CREATE_NEW_PROCESS_GROUP = 0x00000200
@@ -31,7 +31,7 @@ KEEP_DESIGNS_DAYS = 7
 
 
 def work_dir():
-    path = os.path.join(tempfile.gettempdir(), "vinylcut")
+    path = os.path.join(tempfile.gettempdir(), "inkcut2")
     os.makedirs(path, exist_ok=True)
     return path
 
@@ -68,7 +68,7 @@ def gui_command(json_path):
     env.pop("PYTHONHOME", None)
     env.pop("PYTHONSTARTUP", None)
     env["PYTHONIOENCODING"] = "utf-8"
-    return [exe, "-m", "vinylcut.gui", json_path], env, HERE
+    return [exe, "-m", "inkcut2.gui", json_path], env, HERE
 
 
 def launch_gui(json_path):
@@ -104,7 +104,7 @@ def launch_gui(json_path):
     return log_path
 
 
-class VinylCut(inkex.EffectExtension):
+class InkCut2(inkex.EffectExtension):
     def add_arguments(self, pars):
         pars.add_argument("--scope", default="selection", choices=["selection", "document"])
         pars.add_argument("--tolerance", type=float, default=extract.DEFAULT_TOLERANCE_MM)
@@ -136,13 +136,13 @@ class VinylCut(inkex.EffectExtension):
         elements = self.elements()
         if not elements:
             if self.options.scope == "document":
-                inkex.errormsg("VinylCut: the drawing is empty - nothing to cut.")
+                inkex.errormsg("InkCut2: the drawing is empty - nothing to cut.")
             else:
                 inkex.errormsg(
-                    "VinylCut: nothing is selected.\n\n"
+                    "InkCut2: nothing is selected.\n\n"
                     "Select the objects you want to cut first (Edit > Select All, Ctrl+A, "
                     "selects everything on the current layer), or use "
-                    "Extensions > Vinyl Cutter > Cut Whole Document."
+                    "Extensions > InkCut2 > Cut Whole Document."
                 )
             return False
 
@@ -160,7 +160,7 @@ class VinylCut(inkex.EffectExtension):
         warnings = notes + result.warnings
         if not result.polylines:
             inkex.errormsg(
-                "VinylCut: the selection contains nothing that can be cut "
+                "InkCut2: the selection contains nothing that can be cut "
                 "(no visible paths, shapes or text).\n" + "\n".join(warnings)
             )
             return False
@@ -173,18 +173,18 @@ class VinylCut(inkex.EffectExtension):
             json.dump(result.to_design(self.design_name()), fh, separators=(",", ":"))
 
         if warnings:
-            inkex.errormsg("VinylCut warnings:\n- " + "\n- ".join(warnings))
+            inkex.errormsg("InkCut2 warnings:\n- " + "\n- ".join(warnings))
 
-        if os.environ.get("VINYLCUT_NO_LAUNCH") == "1":
+        if os.environ.get("INKCUT2_NO_LAUNCH") == "1":
             sys.stderr.write(json_path + "\n")
             sys.stderr.flush()
         else:
             try:
                 launch_gui(json_path)
             except Exception as err:
-                inkex.errormsg("VinylCut: could not start the cutting window: %s\nDesign saved to %s" % (err, json_path))
+                inkex.errormsg("InkCut2: could not start the cutting window: %s\nDesign saved to %s" % (err, json_path))
         return False
 
 
 if __name__ == "__main__":
-    VinylCut().run()
+    InkCut2().run()

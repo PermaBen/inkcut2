@@ -1,4 +1,4 @@
-# VinylCut device and protocol research
+# InkCut2 device and protocol research
 
 Agent A. Sources are listed at the end of each section. **[verify]** marks
 anything that should be checked on the real machine.
@@ -66,7 +66,7 @@ a test cut.
   Pressure", manual appendix A-8) all set speed and pressure from software, so
   the firmware accepts host speed/force commands. HP-GL/2 cutter convention is
   `VS<cm/s>;` and `FS<grams>;`. Both units match GCC's own UI (cm/s, g).
-  VinylCut sends `VS`/`FS` for the GCC presets. **[verify]** with a test cut:
+  InkCut2 sends `VS`/`FS` for the GCC presets. **[verify]** with a test cut:
   send FS80 and then FS200 and compare blade depth. If the cutter ignores
   them, set them on VLCD instead (the options can be turned off).
 * No GCC-specific escape commands were found. GreatCut's `.ECD` drivers are
@@ -76,17 +76,17 @@ a test cut.
   `%Pressure%` instructions. There is no Expert II-specific file. The closest
   is `GCCExpertPro.ECD`.
 * The firmware applies blade offset (drag-knife) compensation itself (VLCD
-  "Blade Offset"). **VinylCut's GCC presets therefore set software blade
+  "Blade Offset"). **InkCut2's GCC presets therefore set software blade
   offset to 0**, so the offset is not applied twice. If you prefer software
   compensation, set the cutter's offset to 0.000 and use the job's blade
   offset.
 
-### Axis orientation (choice for VinylCut)
+### Axis orientation (choice for InkCut2)
 For roll cutters the HP-GL **X axis is the media-feed direction and Y is the
 carriage direction**, with the origin at the front-right. InkCut users of
 GCC cutters, including this user, enable `swap_xy` to get that. Standard
 HP-GL that reads upright in an X-right/Y-up frame cuts non-mirrored (Inkscape's
-`hpgl_encoder.py` flips SVG y the same way). VinylCut's material frame (x
+`hpgl_encoder.py` flips SVG y the same way). InkCut2's material frame (x
 along feed, y across, y-up) already **is** that frame. The GCC presets
 therefore use `swap_axes=False, invert_x=False, invert_y=False`, and
 `to_device(x, y) = (round(40·x), round(40·y))`. **[verify]** that a test
@@ -111,7 +111,7 @@ inkjetbiz.com) give similar numbers. One third-party page lists 400 mm/s and
 * GCC drivers are `Cutter\*.ECD` and `Cutter\defaultdrv\*.ECD` (Expert Pro,
   Jaguar JG*, Puma*, RX, iCraft, Bengal, ...). They are encrypted/compressed,
   so they could not be read.
-* GreatCut job features worth copying in VinylCut: weeding lines (horizontal/vertical) and a
+* GreatCut job features worth copying in InkCut2: weeding lines (horizontal/vertical) and a
   weed frame; multi copy; "WYSIWYG" vs "Origin Point" output; overcut; tool
   offset per material (`%IToolOffset%`); speed/pressure per material
   (`%IMatSpeed%`, `%IMatPressure%`); a reduced-speed feed init (`(FF:VS1)`);
@@ -179,7 +179,7 @@ Absolute coordinates are clamped to ≥ 0.
 * **printer** (win32print, pywin32): `OpenPrinter`,
   `StartDocPrinter(p, 1, ("Inkcut job", None, "RAW"))`, `StartPagePrinter`,
   `WritePrinter` per command, then `EndPagePrinter`/`EndDocPrinter`/`ClosePrinter`
-  (CUPS/lpr on Linux). It always spools, so no delays. VinylCut does the
+  (CUPS/lpr on Linux). It always spools, so no delays. InkCut2 does the
   same with ctypes (`winspool.drv`) and does not need pywin32.
 * **disk**: writes `directory/format`, where the format is
   `inkcut-{time}.{protocol}`.
@@ -194,7 +194,7 @@ The file is jsonpickle. Objects are encoded as
 It contains two devices plus job history.
 
 **"GCC Expert II"** (Generic Driver):
-| InkCut | value | VinylCut import |
+| InkCut | value | InkCut2 import |
 |---|---|---|
 | area.size | [1800, 900000] px | width **508 mm** (1800/3.5433 = 20 in). Length is "unlimited", so 25000 mm (GCC max) is used. |
 | area.padding | [10, 10, 10, 10] px | 2.822 mm on all sides |
@@ -203,7 +203,7 @@ It contains two devices plus job history.
 | swap_xy | true | swap_axes=False (feed = device X, identical to the GCC preset) |
 | speed | 1.1 in/s, speed_enabled | default_speed **2.79 cm/s**, use_speed_cmd=True. InkCut actually sent `VS1`. **[verify]** what you want. 30 cm/s is GCC's default. |
 | force | 40 g, force_enabled=false | default_force 40, use_force_cmd=False |
-| interpolate, step_size, step_time | true, 3.5433 px (1 mm), 127 ms | InkCut throttled to about 7.9 mm/s. Not reproduced: VinylCut relies on handshake and chunking, and the GCC has a 1 MB buffer. Recorded in notes. |
+| interpolate, step_size, step_time | true, 3.5433 px (1 mm), 127 ms | InkCut throttled to about 7.9 mm/s. Not reproduced: InkCut2 relies on handshake and chunking, and the GCC has a 1 MB buffer. Recorded in notes. |
 | quality_factor | 10 | (curve flattening is done by the Inkscape side) |
 | filters | none | overcut 0, blade offset 0 |
 
@@ -223,7 +223,7 @@ COM3 with a 0 width. It is an unused default.
 * `inkex/ports.py` serial: `timeout=0.1`. Flow maps to xonxoff, rtscts, or
   dsrdtr+rtscts.
 
-## 5. Decisions implemented in VinylCut
+## 5. Decisions implemented in InkCut2
 * **HP-GL output** for GCC:
   `IN;VS<cm/s>;FS<g>;PUx,y;PDx1,y1,x2,y2,...;...;PU0,0;IN;`. Coordinates are
   integers. Consecutive duplicates after rounding are dropped, and paths that

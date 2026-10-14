@@ -1,4 +1,4 @@
-"""Tests for the VinylCut GTK window (vinylcut/gui.py, gui_preview.py, gui_widgets.py).
+"""Tests for the InkCut2 GTK window (inkcut2/gui.py, gui_preview.py, gui_widgets.py).
 
 Stdlib unittest only. GTK tests use offscreen rendering and never open a visible window.
 Config files are redirected to a temporary directory so the user's settings are untouched.
@@ -17,11 +17,11 @@ _OLD_ENV = {}
 
 def setUpModule():
     global _TMP
-    _TMP = tempfile.mkdtemp(prefix="vinylcut-gui-test-")
-    for k in ("APPDATA", "VINYLCUT_CONFIG_DIR"):
+    _TMP = tempfile.mkdtemp(prefix="inkcut2-gui-test-")
+    for k in ("APPDATA", "INKCUT2_CONFIG_DIR"):
         _OLD_ENV[k] = os.environ.get(k)
     os.environ["APPDATA"] = _TMP
-    os.environ["VINYLCUT_CONFIG_DIR"] = os.path.join(_TMP, "vinylcut")
+    os.environ["INKCUT2_CONFIG_DIR"] = os.path.join(_TMP, "inkcut2")
 
 
 def tearDownModule():
@@ -42,8 +42,8 @@ except Exception:  # noqa: BLE001
     HAVE_GTK = False
 
 if HAVE_GTK:
-    from vinylcut import gui
-    from vinylcut import gui_preview as gp
+    from inkcut2 import gui
+    from inkcut2 import gui_preview as gp
 
     try:
         BACKEND = gui.load_backend()

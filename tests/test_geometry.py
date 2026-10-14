@@ -3,7 +3,7 @@ import random
 import time
 import unittest
 
-from vinylcut import geometry as G
+from inkcut2 import geometry as G
 
 
 def square(x0, y0, s, ccw=True):

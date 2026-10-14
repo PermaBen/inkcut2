@@ -381,7 +381,7 @@ def _build_presets() -> dict:
             protocol_options={"use_speed_cmd": False, "use_force_cmd": False, "return_home": True},
             connection=ConnectionSettings(
                 kind="file",
-                file_path=os.path.join(os.path.expanduser("~"), "Documents", "vinylcut-{time}.plt")),
+                file_path=os.path.join(os.path.expanduser("~"), "Documents", "inkcut2-{time}.plt")),
             notes="Writes an HP-GL file instead of sending to a cutter.",
         ),
     ]
@@ -397,17 +397,17 @@ def preset(name: str) -> DeviceProfile:
 
 
 # ---------------------------------------------------------------------------
-# Persistence: %APPDATA%\vinylcut\devices.json
+# Persistence: %APPDATA%\inkcut2\devices.json
 # ---------------------------------------------------------------------------
 def config_dir() -> Path:
     # Same resolution as job.config_dir() so all settings share one folder.
-    override = os.environ.get("VINYLCUT_CONFIG_DIR")
+    override = os.environ.get("INKCUT2_CONFIG_DIR")
     if override:
         return Path(override)
     base = os.environ.get("APPDATA")
     if not base:
         base = os.path.join(os.path.expanduser("~"), ".config")
-    return Path(base) / "vinylcut"
+    return Path(base) / "inkcut2"
 
 
 def profiles_path() -> Path:
@@ -427,7 +427,7 @@ def _read_store(path=None) -> dict:
 
 
 def load_profiles(path=None) -> list:
-    """Profiles from %APPDATA%\\vinylcut\\devices.json, else copies of the presets."""
+    """Profiles from %APPDATA%\\inkcut2\\devices.json, else copies of the presets."""
     data = _read_store(path)
     items = data.get("profiles")
     profiles = []
@@ -673,7 +673,7 @@ def _convert_inkcut_device(dev: dict) -> DeviceProfile:
         p.steps_per_mm = round(base * s, 6)
     elif protocol == "gcode":
         p.steps_per_mm = 40.0           # unused by G-code (written in mm)
-        notes.append("InkCut G-code coordinates were in px (1/90 in); VinylCut writes mm.")
+        notes.append("InkCut G-code coordinates were in px (1/90 in); InkCut2 writes mm.")
     else:
         p.steps_per_mm = round(INKCUT_PX_PER_MM * s, 6)
 
@@ -686,7 +686,7 @@ def _convert_inkcut_device(dev: dict) -> DeviceProfile:
     speed_enabled = _to_bool(cfg.get("speed_enabled"))
     force_enabled = _to_bool(cfg.get("force_enabled"))
     if speed_enabled and protocol in ("hpgl", "camm", "dmpl", "gpgl"):
-        notes.append("InkCut sent the raw speed value %s (%s) as an integer (e.g. VS%d); VinylCut "
+        notes.append("InkCut sent the raw speed value %s (%s) as an integer (e.g. VS%d); InkCut2 "
                      "sends cm/s, so the default speed is %.2f cm/s - verify on the cutter."
                      % (speed, units, int(speed), p.default_speed))
     lo, hi = p.speed_range
@@ -756,7 +756,7 @@ def _convert_inkcut_device(dev: dict) -> DeviceProfile:
         step_ms = _to_float(cfg.get("step_time"), 0)
         if step_ms > 0:
             notes.append("InkCut streamed in %.3g mm steps every %g ms (~%.1f mm/s) to avoid "
-                         "buffer overflow; VinylCut relies on handshake/chunking instead."
+                         "buffer overflow; InkCut2 relies on handshake/chunking instead."
                          % (step_mm, step_ms, step_mm * 1000.0 / step_ms))
     if p.connection.kind == "serial" and p.connection.flow == "none":
         notes.append("Serial flow control was 'none'; most cutters (GCC included) expect "

@@ -470,7 +470,7 @@ class PrinterTransport(Transport):
 
     kind = "printer"
 
-    def __init__(self, conn=None, doc_name="VinylCut job"):
+    def __init__(self, conn=None, doc_name="InkCut2 job"):
         super().__init__(conn)
         self.doc_name = doc_name
         self.handle = None

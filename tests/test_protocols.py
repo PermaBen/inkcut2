@@ -2,8 +2,8 @@ import re
 import types
 import unittest
 
-from vinylcut import protocols
-from vinylcut.devices import DeviceProfile, preset
+from inkcut2 import protocols
+from inkcut2.devices import DeviceProfile, preset
 
 SQUARE = [[(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0), (0.0, 0.0)]]
 

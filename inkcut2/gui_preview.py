@@ -1,10 +1,10 @@
-﻿"""Cut preview widget for the VinylCut window (GTK 3 DrawingArea + cairo).
+﻿"""Cut preview widget for the InkCut2 window (GTK 3 DrawingArea + cairo).
 
 Draws everything in *material coordinates* (mm): x = along the media feed (to the
 right), y = across the media width (upwards), origin (0, 0) = cutter origin.
 
 The widget is fed a :class:`Scene` (plain data computed by gui.py from a Job) and
-never imports the other vinylcut modules, so it can be rendered offscreen
+never imports the other inkcut2 modules, so it can be rendered offscreen
 (``render()``/``render_png()``) for automated snapshots.
 """
 

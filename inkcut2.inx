@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
   <name>Cut Selection…</name>
-  <id>org.vinylcut.cut</id>
-  <!-- No dialog: every setting lives in the VinylCut cutting window. -->
+  <id>org.inkcut2.cut</id>
+  <!-- No dialog: every setting lives in the InkCut2 cutting window. -->
   <param name="scope" type="string" gui-hidden="true">selection</param>
   <!-- Curve flattening tolerance in mm (max deviation of the cut from the true curve). -->
   <param name="tolerance" type="float" gui-hidden="true" min="0.001" max="1.0" precision="3">0.02</param>
   <effect needs-live-preview="false">
     <object-type>all</object-type>
     <effects-menu>
-      <submenu name="Vinyl Cutter"/>
+      <submenu name="InkCut2"/>
     </effects-menu>
-    <menu-tip>Send the selected objects to the VinylCut cutting window (GCC Expert II / HPGL cutters)</menu-tip>
+    <menu-tip>Send the selected objects to the InkCut2 cutting window (GCC Expert II / HPGL cutters)</menu-tip>
   </effect>
   <script>
-    <command location="inx" interpreter="python">vinylcut.py</command>
+    <command location="inx" interpreter="python">inkcut2.py</command>
   </script>
 </inkscape-extension>

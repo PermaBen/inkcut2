@@ -1,10 +1,10 @@
-"""VinylCut cutting window (GTK 3).
+"""InkCut2 cutting window (GTK 3).
 
 Usage::
 
-    python -m vinylcut.gui <design.json>          # normal use (launched by the Inkscape extension)
-    python -m vinylcut.gui --demo                 # built-in sample sticker
-    python -m vinylcut.gui --demo --snapshot out.png [--width 1200 --height 800]
+    python -m inkcut2.gui <design.json>          # normal use (launched by the Inkscape extension)
+    python -m inkcut2.gui --demo                 # built-in sample sticker
+    python -m inkcut2.gui --demo --snapshot out.png [--width 1200 --height 800]
                                                   # render offscreen to PNG and exit (automated checks)
 
 Extra options (mainly for testing): ``--set key=value`` (override a JobSettings field, repeatable),
@@ -37,9 +37,9 @@ from gi.repository import Gdk, GLib, Gtk  # noqa: E402
 from .gui_preview import PreviewArea, Scene  # noqa: E402
 from . import gui_widgets as W  # noqa: E402
 
-log = logging.getLogger("vinylcut.gui")
+log = logging.getLogger("inkcut2.gui")
 
-APP_TITLE = "VinylCut"
+APP_TITLE = "InkCut2"
 
 ORDER_CHOICES = [
     ("inside_out", "Inside first (holes before outlines)"),
@@ -237,12 +237,12 @@ def stopbits_value(v):
 
 
 def _state_path():
-    # Same folder as job.json / devices.json (VINYLCUT_CONFIG_DIR overrides).
-    override = os.environ.get("VINYLCUT_CONFIG_DIR")
+    # Same folder as job.json / devices.json (INKCUT2_CONFIG_DIR overrides).
+    override = os.environ.get("INKCUT2_CONFIG_DIR")
     if override:
         return os.path.join(override, "gui.json")
     base = os.environ.get("APPDATA") or os.path.expanduser("~")
-    return os.path.join(base, "vinylcut", "gui.json")
+    return os.path.join(base, "inkcut2", "gui.json")
 
 
 def load_gui_state():
@@ -1807,7 +1807,7 @@ class CutterApp:
         return False
 
     def _on_delete(self, win, _ev):
-        if self._busy and not self.confirm("A job is being sent", "Stop sending and close VinylCut?", "Stop and close"):
+        if self._busy and not self.confirm("A job is being sent", "Stop sending and close InkCut2?", "Stop and close"):
             return True
         if self._cancel is not None:
             self._cancel.set()
@@ -1842,7 +1842,7 @@ class CutterApp:
 # entry point
 # ----------------------------------------------------------------------------------------
 def _setup_logging():
-    path = os.path.join(tempfile.gettempdir(), "vinylcut-gui.log")
+    path = os.path.join(tempfile.gettempdir(), "inkcut2-gui.log")
     handlers = []
     try:
         handlers.append(logging.FileHandler(path, encoding="utf-8"))
@@ -1873,7 +1873,7 @@ def _out(*a):
 
 
 def parse_args(argv):
-    ap = argparse.ArgumentParser(prog="python -m vinylcut.gui", description="VinylCut cutting window")
+    ap = argparse.ArgumentParser(prog="python -m inkcut2.gui", description="InkCut2 cutting window")
     ap.add_argument("design", nargs="?", help="design JSON written by the Inkscape extension")
     ap.add_argument("--demo", action="store_true", help="open with a built-in sample design")
     ap.add_argument("--snapshot", metavar="PNG", help="render the window offscreen to PNG and exit")
@@ -1953,7 +1953,7 @@ def snapshot(app, args):
 def main(argv=None):
     args = parse_args(sys.argv[1:] if argv is None else argv)
     _setup_logging()
-    log.info("VinylCut GUI starting: %s", " ".join(sys.argv[1:] if argv is None else argv))
+    log.info("InkCut2 GUI starting: %s", " ".join(sys.argv[1:] if argv is None else argv))
     headless = bool(args.snapshot)
 
     def fail(title, text, code=2):
@@ -1967,7 +1967,7 @@ def main(argv=None):
     try:
         backend = load_backend()
     except Exception:  # noqa: BLE001
-        return fail("VinylCut could not start", "A program module failed to load:\n\n" + traceback.format_exc())
+        return fail("InkCut2 could not start", "A program module failed to load:\n\n" + traceback.format_exc())
 
     try:
         if args.demo:
@@ -1975,7 +1975,7 @@ def main(argv=None):
         elif args.design:
             design = load_design(args.design)
         else:
-            return fail("No design", "Start VinylCut from Inkscape (Extensions > Vinyl Cutter) "
+            return fail("No design", "Start InkCut2 from Inkscape (Extensions > InkCut2) "
                                      "or pass a design JSON file / --demo.")
     except DesignError as e:
         return fail("Cannot open the design", str(e))
@@ -2016,7 +2016,7 @@ def main(argv=None):
     try:
         app = CutterApp(design, backend, settings=settings, persist=True, device_name=args.device)
     except Exception:  # noqa: BLE001
-        return fail("VinylCut could not start", traceback.format_exc(), 1)
+        return fail("InkCut2 could not start", traceback.format_exc(), 1)
     app_ref["app"] = app
     win = Gtk.Window(title="%s — %s" % (APP_TITLE, design.get("name") or "design"))
     try:

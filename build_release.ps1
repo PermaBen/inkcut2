@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Builds dist\VinylCut-<version>.zip for a GitHub release.
+    Builds dist\InkCut2-<version>.zip for a GitHub release.
 
 .DESCRIPTION
-    The version comes from vinylcut\__init__.py. The zip contains everything a user needs
+    The version comes from inkcut2\__init__.py. The zip contains everything a user needs
     (extension files, installers, README, LICENSE) and nothing else: no tests, docs or
     __pycache__. Users extract it and double-click install.cmd.
 
@@ -13,23 +13,23 @@ $ErrorActionPreference = 'Stop'
 $src = $PSScriptRoot
 if (-not $src) { $src = Split-Path -Parent $MyInvocation.MyCommand.Path }
 
-$init = Get-Content -LiteralPath (Join-Path $src 'vinylcut\__init__.py') -Raw
-if ($init -notmatch '__version__\s*=\s*"([^"]+)"') { throw "No __version__ in vinylcut\__init__.py" }
+$init = Get-Content -LiteralPath (Join-Path $src 'inkcut2\__init__.py') -Raw
+if ($init -notmatch '__version__\s*=\s*"([^"]+)"') { throw "No __version__ in inkcut2\__init__.py" }
 $version = $Matches[1]
 
-$name = "VinylCut-$version"
+$name = "InkCut2-$version"
 $dist = Join-Path $src 'dist'
 $zip = Join-Path $dist "$name.zip"
 # Stage in local temp: on a network share, antivirus can still hold freshly copied files
 # open when the zip is written.
-$tmp = Join-Path ([IO.Path]::GetTempPath()) ("vinylcut-build-" + [guid]::NewGuid().ToString('N'))
+$tmp = Join-Path ([IO.Path]::GetTempPath()) ("inkcut2-build-" + [guid]::NewGuid().ToString('N'))
 $stage = Join-Path $tmp $name
 
 if (-not (Test-Path -LiteralPath $dist)) { New-Item -ItemType Directory -Path $dist -Force | Out-Null }
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 
-$files = @('vinylcut.inx', 'vinylcut_all.inx', 'vinylcut.py', 'install.ps1', 'install.cmd', 'README.md', 'LICENSE')
+$files = @('inkcut2.inx', 'inkcut2_all.inx', 'inkcut2.py', 'install.ps1', 'install.cmd', 'README.md', 'LICENSE')
 foreach ($f in $files) {
     $p = Join-Path $src $f
     if (Test-Path -LiteralPath $p) {
@@ -41,12 +41,12 @@ foreach ($f in $files) {
     }
 }
 
-$pkgDest = Join-Path $stage 'vinylcut'
+$pkgDest = Join-Path $stage 'inkcut2'
 New-Item -ItemType Directory -Path $pkgDest -Force | Out-Null
-Get-ChildItem -LiteralPath (Join-Path $src 'vinylcut') -File -Filter '*.py' |
+Get-ChildItem -LiteralPath (Join-Path $src 'inkcut2') -File -Filter '*.py' |
     ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $pkgDest }
 
-# Zip the folder itself so users get VinylCut-<version>\... when they extract.
+# Zip the folder itself so users get InkCut2-<version>\... when they extract.
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $localZip = Join-Path $tmp "$name.zip"
 [IO.Compression.ZipFile]::CreateFromDirectory($stage, $localZip, [IO.Compression.CompressionLevel]::Optimal, $true)

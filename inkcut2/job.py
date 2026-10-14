@@ -33,7 +33,7 @@ from dataclasses import asdict, dataclass, fields
 
 from . import geometry as G
 
-CONFIG_ENV_VAR = "VINYLCUT_CONFIG_DIR"
+CONFIG_ENV_VAR = "INKCUT2_CONFIG_DIR"
 SETTINGS_FILE = "job.json"
 
 PASS_MODES = ("per_path", "per_job")
@@ -46,18 +46,18 @@ _EPS = 1e-6
 
 
 def config_dir() -> str:
-    """Directory for VinylCut's config files (not created here).
+    """Directory for InkCut2's config files (not created here).
 
-    ``%VINYLCUT_CONFIG_DIR%`` if set (used by tests / portable installs), else
-    ``%APPDATA%\\vinylcut``, else ``~/.config/vinylcut``.
+    ``%INKCUT2_CONFIG_DIR%`` if set (used by tests / portable installs), else
+    ``%APPDATA%\\inkcut2``, else ``~/.config/inkcut2``.
     """
     env = os.environ.get(CONFIG_ENV_VAR)
     if env:
         return env
     appdata = os.environ.get("APPDATA")
     if appdata:
-        return os.path.join(appdata, "vinylcut")
-    return os.path.join(os.path.expanduser("~"), ".config", "vinylcut")
+        return os.path.join(appdata, "inkcut2")
+    return os.path.join(os.path.expanduser("~"), ".config", "inkcut2")
 
 
 # ------------------------------------------------------------------------ settings

@@ -9,9 +9,9 @@ import threading
 import time
 import unittest
 
-from vinylcut import transports
-from vinylcut.devices import ConnectionSettings
-from vinylcut.transports import (FileTransport, NetworkTransport, PrinterTransport,
+from inkcut2 import transports
+from inkcut2.devices import ConnectionSettings
+from inkcut2.transports import (FileTransport, NetworkTransport, PrinterTransport,
                                  SerialTransport, TransportError, TransportTimeout,
                                  make_transport)
 
@@ -237,7 +237,7 @@ class PrinterTests(unittest.TestCase):
     @unittest.skipUnless(sys.platform == "win32", "Windows only")
     def test_unknown_printer(self):
         t = PrinterTransport(ConnectionSettings(kind="printer",
-                                                printer_name="VinylCut nonexistent printer 123"))
+                                                printer_name="InkCut2 nonexistent printer 123"))
         with self.assertRaises(TransportError) as cm:
             t.open()
         self.assertIn("Could not open printer", str(cm.exception))

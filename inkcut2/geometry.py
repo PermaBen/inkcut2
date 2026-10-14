@@ -1,4 +1,4 @@
-"""Pure 2-D polyline geometry for VinylCut.
+"""Pure 2-D polyline geometry for InkCut2.
 
 Conventions (see docs/ARCHITECTURE.md):
 

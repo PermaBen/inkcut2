@@ -1,6 +1,6 @@
 """Inkscape selection -> cuttable polylines in millimetres.
 
-Used by ``vinylcut.py`` (the inkex effect).  Kept separate so it can be unit-tested
+Used by ``inkcut2.py`` (the inkex effect).  Kept separate so it can be unit-tested
 against SVG files without Inkscape running.
 
 Output follows docs/ARCHITECTURE.md: design coordinates in mm, SVG orientation
@@ -589,9 +589,9 @@ def convert_text_to_paths(svg, texts, workdir=None, inkscape=None, timeout=180):
         tid = orig.get("id")
         if not tid:
             n += 1
-            while "vinylcut-text-%d" % n in used:
+            while "inkcut2-text-%d" % n in used:
                 n += 1
-            tid = "vinylcut-text-%d" % n
+            tid = "inkcut2-text-%d" % n
             dup.set("id", tid)
         text_ids[orig] = tid
     if len(text_ids) != len(wanted):

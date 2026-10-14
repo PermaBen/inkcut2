@@ -1,4 +1,4 @@
-"""Tests for vinylcut.extract and the vinylcut.py Inkscape effect (agent D).
+"""Tests for inkcut2.extract and the inkcut2.py Inkscape effect (agent D).
 
 Run from the project root:
     & "C:\\Program Files\\Inkscape\\bin\\python.exe" -m unittest discover -s tests -t .
@@ -21,7 +21,7 @@ for _p in (ROOT, INKEX_DIR):
 
 try:
     import inkex  # noqa: E402
-    from vinylcut import extract as ex  # noqa: E402
+    from inkcut2 import extract as ex  # noqa: E402
 except ImportError as _err:  # pragma: no cover
     inkex = None
     _IMPORT_ERROR = _err
@@ -164,7 +164,7 @@ class ExtractShapes(unittest.TestCase):
 
     def test_document_not_modified(self):
         # inkex itself re-serialises transform="" when it first wraps an element (which
-        # is why vinylcut.py never writes the document back); after one pass the tree
+        # is why inkcut2.py never writes the document back); after one pass the tree
         # must be stable, i.e. extraction makes no edits of its own.
         svg = load("shapes.svg")
         ex.extract(svg, ex.document_elements(svg))
@@ -260,13 +260,13 @@ class ExtractText(unittest.TestCase):
 
 @unittest.skipIf(inkex is None, "inkex not importable")
 class EffectCommandLine(unittest.TestCase):
-    """Run vinylcut.py the way Inkscape does (no GUI launch)."""
+    """Run inkcut2.py the way Inkscape does (no GUI launch)."""
 
     def run_effect(self, fixture, *ids, extra=()):
         env = dict(os.environ)
         env["PYTHONPATH"] = os.pathsep.join([INKEX_DIR, ROOT])
-        env["VINYLCUT_NO_LAUNCH"] = "1"
-        args = [sys.executable, os.path.join(ROOT, "vinylcut.py")]
+        env["INKCUT2_NO_LAUNCH"] = "1"
+        args = [sys.executable, os.path.join(ROOT, "inkcut2.py")]
         args += ["--id=%s" % i for i in ids] + list(extra) + [os.path.join(FIX, fixture)]
         return subprocess.run(args, env=env, cwd=ROOT, capture_output=True, timeout=300)
 

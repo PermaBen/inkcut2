@@ -1,28 +1,28 @@
-# VinylCut — Inkscape → vinyl cutter plugin
+# InkCut2 — Inkscape → vinyl cutter plugin
 
 Target: Inkscape 1.4.x on Windows, its bundled Python 3.12 (`C:\Program Files\Inkscape\bin\python.exe`),
 which ships `gi` (GTK 3.24 + cairo), `pyserial` 3.5, `lxml`, `numpy`. **No other third-party deps.**
 Primary device: GCC Expert II (HPGL). Must also speak the InkCut "Generic Driver" protocols.
 
 ## Workflow
-1. User selects objects in Inkscape → *Extensions ▸ Vinyl Cutter ▸ Cut Selection…*
-2. `vinylcut.py` (inkex effect) converts the selection (text → path, groups, transforms, curves flattened)
+1. User selects objects in Inkscape → *Extensions ▸ InkCut2 ▸ Cut Selection…*
+2. `inkcut2.py` (inkex effect) converts the selection (text → path, groups, transforms, curves flattened)
    into polylines in **mm**, writes a *design JSON* to `%TEMP%`, launches the GUI **detached**
-   (`pythonw.exe -m vinylcut.gui <design.json>`) and returns immediately, leaving the document unchanged.
+   (`pythonw.exe -m inkcut2.gui <design.json>`) and returns immediately, leaving the document unchanged.
 3. GUI: preview + job/device/connection settings → send to cutter (or save .plt).
 
 ## File layout & ownership (one owner per file — do not edit files you don't own)
 ```
 Custom Plugin/
-  vinylcut.inx, vinylcut.py           # Inkscape integration        (agent D)
+  inkcut2.inx, inkcut2.py           # Inkscape integration        (agent D)
   install.ps1, README.md              #                             (agent D)
-  vinylcut/__init__.py                # version only                (lead)
-  vinylcut/geometry.py                # pure geometry               (agent B)
-  vinylcut/job.py                     # JobSettings + Job pipeline  (agent B)
-  vinylcut/devices.py                 # profiles, presets, InkCut import (agent A)
-  vinylcut/protocols.py               # HPGL/DMPL/GPGL/CAMM encoders(agent A)
-  vinylcut/transports.py              # serial/printer/file/network (agent A)
-  vinylcut/gui.py                     # GTK3 window + preview       (agent C)
+  inkcut2/__init__.py                # version only                (lead)
+  inkcut2/geometry.py                # pure geometry               (agent B)
+  inkcut2/job.py                     # JobSettings + Job pipeline  (agent B)
+  inkcut2/devices.py                 # profiles, presets, InkCut import (agent A)
+  inkcut2/protocols.py               # HPGL/DMPL/GPGL/CAMM encoders(agent A)
+  inkcut2/transports.py              # serial/printer/file/network (agent A)
+  inkcut2/gui.py                     # GTK3 window + preview       (agent C)
   tests/test_*.py                     # unittest (NOT pytest) — each agent owns its own test files
   docs/research.md                    # device/protocol research    (agent A)
 ```
@@ -45,7 +45,7 @@ Point = tuple[float, float]        # mm
 Polyline = list[Point]             # closed iff first point == last point (within 1e-6)
 ```
 
-## Design JSON (written by vinylcut.py, read by gui.py)
+## Design JSON (written by inkcut2.py, read by gui.py)
 ```json
 {"version": 1, "name": "drawing.svg", "units": "mm",
  "polylines": [[[x, y], [x, y], ...], ...],
@@ -105,7 +105,7 @@ class JobSettings:
     weed_margin: float = 3.0
     def to_dict(self) -> dict ; @classmethod from_dict(cls, d) -> "JobSettings"   # ignore unknown keys
 
-def load_last_settings() -> JobSettings      # %APPDATA%\vinylcut\job.json (missing/corrupt → defaults)
+def load_last_settings() -> JobSettings      # %APPDATA%\inkcut2\job.json (missing/corrupt → defaults)
 def save_last_settings(s: JobSettings) -> None
 
 class Job:
@@ -166,7 +166,7 @@ class DeviceProfile:
     def to_dict(self) -> dict ; @classmethod from_dict(cls, d)
 
 PRESETS: dict[str, DeviceProfile]        # at least "GCC Expert II 24", "GCC Expert II 52", "Generic HPGL"
-def load_profiles() -> list[DeviceProfile]       # %APPDATA%\vinylcut\devices.json, else presets
+def load_profiles() -> list[DeviceProfile]       # %APPDATA%\inkcut2\devices.json, else presets
 def save_profiles(profiles) -> None
 def import_inkcut_devices(path=None) -> list[DeviceProfile]   # default ~/.config/inkcut/inkcut.device.json (jsonpickle format)
 ```
@@ -195,6 +195,6 @@ def make_transport(conn: ConnectionSettings) -> Transport
 `write` is blocking; the GUI calls it from a worker thread and marshals progress with `GLib.idle_add`.
 
 ## gui.py (agent C)
-`python -m vinylcut.gui <design.json>` (also `--demo` to open with a built-in sample design, and
+`python -m inkcut2.gui <design.json>` (also `--demo` to open with a built-in sample design, and
 `--snapshot out.png` to render the preview offscreen and exit — used for automated checks).
 GTK 3 window, see agent C brief for features.

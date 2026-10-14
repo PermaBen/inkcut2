@@ -8,9 +8,9 @@ import tempfile
 import unittest
 from types import SimpleNamespace
 
-from vinylcut import geometry as G
-from vinylcut import job as J
-from vinylcut.job import Job, JobSettings
+from inkcut2 import geometry as G
+from inkcut2 import job as J
+from inkcut2.job import Job, JobSettings
 
 
 def device(**kw):
@@ -278,7 +278,7 @@ class PipelineTest(unittest.TestCase):
     def test_no_devices_import(self):
         root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         out = subprocess.run([sys.executable, "-c",
-                              "import sys, vinylcut.job; print('vinylcut.devices' in sys.modules)"],
+                              "import sys, inkcut2.job; print('inkcut2.devices' in sys.modules)"],
                              cwd=root, capture_output=True, text=True, timeout=60)
         self.assertEqual(out.stdout.strip(), "False", out.stderr)
 
@@ -301,7 +301,7 @@ class SettingsTest(unittest.TestCase):
         os.environ.pop(J.CONFIG_ENV_VAR)
         appdata = os.environ.get("APPDATA")
         if appdata:
-            self.assertEqual(J.config_dir(), os.path.join(appdata, "vinylcut"))
+            self.assertEqual(J.config_dir(), os.path.join(appdata, "inkcut2"))
 
     def test_round_trip(self):
         s = JobSettings(scale_pct=50, mirror_h=True, rotation=90, rows=3, cols=4, auto_fill=True,

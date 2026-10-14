@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vinylcut import devices
-from vinylcut.devices import ConnectionSettings, DeviceProfile, PRESETS
+from inkcut2 import devices
+from inkcut2.devices import ConnectionSettings, DeviceProfile, PRESETS
 
 
 class ToDeviceTests(unittest.TestCase):
@@ -89,7 +89,7 @@ class DictTests(unittest.TestCase):
         for n in ("GCC Expert II 24", "GCC Expert II 52", "Generic HPGL"):
             self.assertIn(n, PRESETS)
         self.assertEqual(PRESETS["GCC Expert II 52"].width_mm, 1320.0)
-        from vinylcut import protocols
+        from inkcut2 import protocols
         for p in PRESETS.values():
             self.assertIn(p.protocol, protocols.PROTOCOLS)
 
@@ -131,7 +131,7 @@ class PersistenceTests(unittest.TestCase):
         old = os.environ.get("APPDATA")
         os.environ["APPDATA"] = self.tmp
         try:
-            self.assertEqual(devices.profiles_path(), Path(self.tmp) / "vinylcut" / "devices.json")
+            self.assertEqual(devices.profiles_path(), Path(self.tmp) / "inkcut2" / "devices.json")
             devices.save_profiles([devices.preset("Generic HPGL")])
             self.assertEqual(devices.load_profiles()[0].name, "Generic HPGL")
         finally:
@@ -245,7 +245,7 @@ class InkCutSyntheticTests(unittest.TestCase):
 
     def test_missing_file(self):
         self.assertEqual(devices.import_inkcut_devices(os.path.join(tempfile.gettempdir(),
-                                                                    "nope-vinylcut.json")), [])
+                                                                    "nope-inkcut2.json")), [])
 
     def test_bad_file(self):
         tmp = tempfile.mkdtemp()
