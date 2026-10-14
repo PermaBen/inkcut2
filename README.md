@@ -1,4 +1,4 @@
-# InkCut2 — cut from Inkscape on a GCC Expert II
+# InkCut2 cut from Inkscape on standard Vinyl Cutters
 
 InkCut2 is an Inkscape 1.4 extension for Windows. Select artwork in Inkscape, pick
 **Extensions ▸ InkCut2 ▸ Cut Selection…**, and a cutting window opens with a
