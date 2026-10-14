@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 100mm x 50mm page, viewBox 400x200 -> 1 user unit = 0.25 mm -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100mm" height="50mm" viewBox="0 0 400 200">
+  <!-- (10,5)-(60,30) mm -->
+  <rect id="rect1" x="40" y="20" width="200" height="100" style="fill:#000000"/>
+  <!-- circle r=40uu=10mm at (300,100)uu=(75,25)mm -> (65,15)-(85,35) -->
+  <circle id="circle1" cx="300" cy="100" r="40"/>
+</svg>
